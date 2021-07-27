@@ -1,58 +1,58 @@
-package protocolo;
+package efinal;
 
 import java.io.BufferedInputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
-import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 
+// La clase ServerThreadHava se encargara de la asignacion de un hilo a cada socket que se conecta al servidor.
 public class ServerThreadHandler extends Thread {
+
     private DataInputStream inputSocket;
     private DataOutputStream outputSocket;
-    private final int nodeId;
     private final Socket socket;
+    private final int nodeId;
     private final ServerManager serverManager;
-    private final HashMap<Integer,  Map.Entry<String, Boolean>> nodes;
 
-    public ServerThreadHandler(Socket socket, ServerManager serverManager, int nodeId, HashMap<Integer,  Map.Entry<String, Boolean>> nodes) {
+    public ServerThreadHandler(Socket socket, ServerManager serverManager, int nodeId) {
         this.socket = socket;
         this.nodeId = nodeId;
         this.serverManager = serverManager;
-        this.nodes = nodes;
-
-        try {
-            this.inputSocket = new DataInputStream(new BufferedInputStream(socket.getInputStream()));
-            this.outputSocket = new DataOutputStream(socket.getOutputStream());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 
     @Override
     public void run() {
-        ServerManager.OnMessageReceived messageListener = serverManager.getMessageListener();
+        String received;
         try {
+            // Entrada y salida de los datos en el socket
+            this.inputSocket = new DataInputStream(new BufferedInputStream(socket.getInputStream()));
+            this.outputSocket = new DataOutputStream(socket.getOutputStream());
+
+            // envia el id al cliente
+            this.outputSocket.writeUTF("id:" + nodeId);
+            ServerManager.OnMessageReceived messageListener = serverManager.getMessageListener();
+
             while (true) {
-                String received = inputSocket.readUTF();
+                received = new String(inputSocket.readUTF());
                 if (messageListener != null) {
                     messageListener.messageReceived(received);
                 }
+                // se cierra la conexion con el socket del cliente en caso envie exit
                 if (received.equals("exit")) {
+                    System.out.println("Consumidor " + this.socket + "envia exit");
                     System.out.println("Cerrando conexion");
-                    this.closeConnection();
+                    this.socket.close();
+                    this.inputSocket.close();
+                    this.outputSocket.close();
                     System.out.println("Conexion cerrada");
                     break;
                 }
             }
-        } catch (IOException e) {
-            if (e.toString().contains("Socket closed") || e.toString().contains("Connection reset")) {
-                System.out.println("ERROR " + e + ". Conexion finalizada.");
-            }
+        } catch (IOException ex) {
+            System.out.println("Client Handled, error: " + ex.getMessage());
         }
+
     }
 
     public void closeConnection() {
@@ -71,7 +71,7 @@ public class ServerThreadHandler extends Thread {
                 outputSocket.writeUTF(request);
                 outputSocket.flush();
             } catch (IOException e) {
-                System.out.println("ERROR SERVERTHEARDHANDLER " + e);
+                e.printStackTrace();
             }
         }
     }
