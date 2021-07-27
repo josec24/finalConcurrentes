@@ -61,8 +61,7 @@ public class Cliente implements Runnable {
             while (!socket.isClosed()) {
                 String line = inputSocket.readUTF();
                 if (line.contains("Respuesta")) {
-                    String resultado = line.split(":")[1];
-                    System.out.println("Respuesta:" + resultado);
+                    System.out.println(line);
                 }
             }
         } catch (IOException e) {
@@ -96,8 +95,10 @@ public class Cliente implements Runnable {
                     // Solicitud de lectura de la cuenta: id cliente-L-2021;numero de cuenta
                     request = String.format("0%d-L-%04d;%d", idCliente, j, getRandom(0, 100));
                 } else {
+                    double moneyRandom = Math.random() * cantidadMax;
+                    String moneyRandomParsed = String.format("%,.2f", moneyRandom).replace(',', '.');
                     // Solicitud de actualizacion de la cuenta: id cliente-A-2021;de;para;dinero que sea transferido
-                    request = String.format("0%d-A-%04d;%d;%d;%.2f", idCliente, j, getRandom(0, ACCOUNTS), getRandom(0, ACCOUNTS), Math.random() * cantidadMax);
+                    request = String.format("0%d-A-%04d;%d;%d;%s", idCliente, j, getRandom(0, ACCOUNTS), getRandom(0, ACCOUNTS), moneyRandomParsed);
                 }
                 // Envia la peticion al servidor
                 this.sendRequestToServer("Solicitud:" + request);

@@ -20,6 +20,7 @@ public class Replica {
     private DataOutputStream outputSocket;
     private int idReplica = 0;
     private int send = 0;
+    private final String pathDirectoryFile = "C:\\Users\\STUART\\Desktop\\Concurrencia\\finalConcurrentes\\account";
 
     public Replica() {
         try {
@@ -46,7 +47,8 @@ public class Replica {
     public String lectura(String request) {
         String respuesta = "";
         try {
-            File fileAccounts = new File("C:\\Users\\jose-\\Desktop\\ffff" + idReplica + ".txt");
+            // C:\Users\STUART\Desktop\Concurrencia\finalConcurrentes
+            File fileAccounts = new File(pathDirectoryFile + ".txt");
             Scanner in = new Scanner(new FileInputStream(fileAccounts));
             while (in.hasNextLine()) {
                 String[] lineaFile = in.nextLine().split(",");
@@ -80,7 +82,7 @@ public class Replica {
             this.send = Integer.parseInt(req[4]);
 
             // Lectura y almacenamiento del archivo en el arreglo moneyOfAccounts
-            BufferedReader file = new BufferedReader(new FileReader("F:\\ejem\\accounts" + idReplica + ".txt"));
+            BufferedReader file = new BufferedReader(new FileReader(pathDirectoryFile + idReplica + ".txt"));
             double[] moneyOfAccounts = new double[ACCOUNTS];
             int count = 0;
 
@@ -107,7 +109,7 @@ public class Replica {
                 buffer.append(String.format("%d,%.2f\n", i, moneyOfAccounts[i]));
             }
 
-            FileOutputStream fileOut = new FileOutputStream("F:\\ejem\\accounts" + idReplica + ".txt");
+            FileOutputStream fileOut = new FileOutputStream(pathDirectoryFile + idReplica+".txt");
             fileOut.write(buffer.toString().getBytes());
             fileOut.close();
         } catch (IOException e) {
