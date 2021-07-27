@@ -20,7 +20,7 @@ public class Replica {
     private DataOutputStream outputSocket;
     private int idReplica = 0;
     private int send = 0;
-    private final String pathDirectoryFile = "C:\\Users\\STUART\\Desktop\\Concurrencia\\finalConcurrentes\\account";
+    private final String pathDirectoryFile = "C:\\Users\\Usuario\\Desktop\\stadios\\Concurrentes\\Final\\finalConcurrentes\\account";
 
     public Replica() {
         try {

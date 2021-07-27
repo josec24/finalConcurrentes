@@ -61,9 +61,7 @@ public class ServerBalanceador {
             queueRespuestas.put(message.trim());
 
             String respuesta = queueRespuestas.take();
-            System.out.println("respuesta: " + respuesta);
             String[] splitRespuesta = respuesta.split(":");
-            System.out.println("splitRespuesta: " + splitRespuesta[0]);
             
             if (splitRespuesta.length > 1) {
                 int idCliente = Integer.parseInt(respuesta.split(":")[1].split("-")[0]);

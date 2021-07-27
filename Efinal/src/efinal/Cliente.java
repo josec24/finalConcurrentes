@@ -15,7 +15,7 @@ import java.util.concurrent.BlockingQueue;
  * actualizacion o lectura en el banco.
  */
 public class Cliente implements Runnable {
-    private static final int ACCOUNTS = 10000;
+    private static final int ACCOUNTS = 3;
     private static final int DELAY = 10; // Tiempo de demora en milisegundos
     private static final double cantidadMax = 200; // Cantidad maxima por transferencia
     private static final int PORT = 4444;
